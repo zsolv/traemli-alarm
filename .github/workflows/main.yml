@@ -1,0 +1,18 @@
+name: Traemli-Alarm CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+ deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Deploy to webserver
+      run: |
+        sudo apt update
+        sudo apt install lftp -y
+        lftp ${{ secrets.FTP_HOST }} -u "${{ secrets.FTP_USERNAME }}","${{ secrets.FTP_PASSWORD }}" -e "mirror -R . /; bye"
